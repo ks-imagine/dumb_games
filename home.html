@@ -74,7 +74,7 @@
 
     <script>
         const urlParam = window.location.search;
-        const word = urlParam.includes('?boys') ? 'GAY UNCLES' : urlParam.includes('?girls') ? 'GAY AUNTS' : '';
+        const word = urlParam.includes('?boys') ? 'GAY UNCLES' : urlParam.includes('?girls') ? 'GAY AUNTS' : 'GAY UNCLES';
         let guessedLetters = word.split('').map(letter => `<span>${letter === ' ' ? ' ' : ' _ '}</span>`);
         const wordDisplay = document.getElementById('word-display');
         const keyboard = document.getElementById('keyboard');
