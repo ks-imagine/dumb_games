@@ -73,7 +73,8 @@
     <div id="congrats-message">🫃🫃WE'RE HAVING A FUCKING BABY 🫃🫃</div>
 
     <script>
-        const word = 'GAY UNCLES';
+        const urlParam = window.location.search;
+        const word = urlParam.includes('?boys') ? 'uncles' : urlParam.includes('?girls') ? 'aunts' : '';
         let guessedLetters = word.split('').map(letter => `<span>${letter === ' ' ? ' ' : ' _ '}</span>`);
         const wordDisplay = document.getElementById('word-display');
         const keyboard = document.getElementById('keyboard');
