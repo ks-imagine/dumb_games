@@ -74,7 +74,20 @@
 
     <script>
         const urlParam = window.location.search;
-        const word = urlParam.includes('?boys') ? 'GAY UNCLES' : urlParam.includes('?girls') ? 'GAY AUNTS' : 'GAY UNCLES';
+        const fungusCheck = urlParam.toLowerCase().includes('fun') ? 'FUN ' : 'GAY ';
+        let word;
+        if (urlParam.toLowerCase().contains('boys') {
+            word = 'UNCLES';
+        } else if (urlParam.toLowerCase().contains('boy') {
+            word = 'UNCLE';
+        } else if (urlParam.toLowerCase().contains('girls') {
+            word = 'AUNTS';
+        } else if (urlParam.toLowerCase().contains('girl') {
+            word = 'AUNT';
+        } else {
+            word = 'UNCLES';
+        }
+        word = fungusCheck + word;
         let guessedLetters = word.split('').map(letter => `<span>${letter === ' ' ? ' ' : ' _ '}</span>`);
         const wordDisplay = document.getElementById('word-display');
         const keyboard = document.getElementById('keyboard');
