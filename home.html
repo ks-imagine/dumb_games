@@ -76,17 +76,19 @@
         const urlParam = window.location.search;
         const fungusCheck = urlParam.toLowerCase().includes('fun') ? 'FUN ' : 'GAY ';
         let word;
-        if (urlParam.toLowerCase().contains('boys')) {
+        
+        if (urlParam.toLowerCase().includes('boys')) {
             word = 'UNCLES';
-        } else if (urlParam.toLowerCase().contains('boy')) {
+        } else if (urlParam.toLowerCase().includes('boy')) {
             word = 'UNCLE';
-        } else if (urlParam.toLowerCase().contains('girls')) {
+        } else if (urlParam.toLowerCase().includes('girls')) {
             word = 'AUNTS';
-        } else if (urlParam.toLowerCase().contains('girl')) {
+        } else if (urlParam.toLowerCase().includes('girl')) {
             word = 'AUNT';
         } else {
             word = 'UNCLES';
         }
+        
         word = fungusCheck + word;
         let guessedLetters = word.split('').map(letter => `<span>${letter === ' ' ? ' ' : ' _ '}</span>`);
         const wordDisplay = document.getElementById('word-display');
