@@ -1,127 +1,168 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Hangman Game</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-        body {
-            display: flex;
-            flex-direction: column-reverse;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Comic Sans MS', Arial, sans-serif;
-            background-color: #FFFCF9;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        #word-display {
-            margin-bottom: 5vh;
-            font-size: 8vw;
-            color: #FFB7C5;
-        }
-        #keyboard {
-            display: flex;
-            flex-wrap: wrap;
-            width: 80vw;
-            justify-content: space-between;
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        height: 100vh;
+        font-family: "Comic Sans MS", Arial, sans-serif;
+        background-color: #fffcf9;
+        padding: 10px;
+        margin-top: 15px;
+        box-sizing: border-box;
+      }
+      #word-display {
+        margin-bottom: 3vh;
+        font-size: 7vw;
+        color: #ffb7c5;
+        margin-top: 3vh;
+      }
+      #keyboard {
+        display: flex;
+        flex-wrap: wrap;
+        width: 80vw;
+        justify-content: space-between;
+      }
+      .key {
+        width: 15vw;
+        height: 15vw;
+        border: 1px solid #ffdac1;
+        background-color: #ffdac1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1vw;
+        cursor: pointer;
+        border-radius: 1vw;
+      }
+      .key.disabled {
+        background-color: #b5ead7;
+        cursor: not-allowed;
+      }
+      #congrats-message {
+        display: none;
+        color: #ffb7c5;
+        font-size: 4vw;
+        margin-top: 2vh;
+      }
+      @media (min-width: 600px) {
+        #word-display,
+        #congrats-message {
+          font-size: 24px;
+          margin-top: 5vh;
         }
         .key {
-            width: 15vw;
-            height: 15vw;
-            border: 1px solid #FFDAC1;
-            background-color: #FFDAC1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 1vw;
-            cursor: pointer;
-            border-radius: 1vw;
+          width: 30px;
+          height: 30px;
+          margin: 5px;
+          border-radius: 5px;
         }
-        .key.disabled {
-            background-color: #B5EAD7;
-            cursor: not-allowed;
+        #keyboard {
+          width: 300px;
         }
-        #congrats-message {
-            display: none;
-            color: #FFB7C5;
-            font-size: 4vw;
-            margin-top: 2vh;
-        }
-        #word-display span:nth-child(4) {
-            padding-left: 15px;
-        }
-        @media (min-width: 600px) {
-            #word-display, #congrats-message {
-                font-size: 24px;
-            }
-            .key {
-                width: 30px;
-                height: 30px;
-                margin: 5px;
-                border-radius: 5px;
-            }
-            #keyboard {
-                width: 300px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div id="congrats-message">🫃🫃WE'RE HAVING A FUCKING BABY 🫃🫃</div>
     <div id="word-display"></div>
     <div id="keyboard"></div>
-    <div id="congrats-message">🫃🫃WE'RE HAVING A FUCKING BABY 🫃🫃</div>
 
     <script>
-        const urlParam = window.location.search;
-        const fungusCheck = urlParam.toLowerCase().includes('fun') ? 'FUN ' : 'GAY ';
-        let word;
-        
-        if (urlParam.toLowerCase().includes('boys')) {
-            word = 'UNCLES';
-        } else if (urlParam.toLowerCase().includes('boy')) {
-            word = 'UNCLE';
-        } else if (urlParam.toLowerCase().includes('girls')) {
-            word = 'AUNTS';
-        } else if (urlParam.toLowerCase().includes('girl')) {
-            word = 'AUNT';
+      const getLowerCaseUrlParam = () => window.location.search.toLowerCase();
+      const createKey = (letter, isClickable = true) => {
+        const key = document.createElement("div");
+        key.textContent = letter;
+        key.classList.add("key");
+        if (isClickable) {
+          key.addEventListener("click", guessLetter);
+        }
+        return key;
+      };
+      const addKeyToKeyboard = (key) => {
+        const keyboard = document.getElementById("keyboard");
+        keyboard.appendChild(key);
+      };
+      const getWord = (urlParam) => {
+        if (urlParam.includes("bs")) {
+          return "UNCLES";
+        } else if (urlParam.includes("b")) {
+          return "UNCLE";
+        } else if (urlParam.includes("gs")) {
+          return "AUNTS";
+        } else if (urlParam.includes("g")) {
+          return "AUNT";
+        } else if (urlParam.includes("au")) {
+          return "AUNT & UNCLE";
         } else {
-            word = 'UNCLES';
+          return "AUNT & UNCLE";
         }
-        
-        word = fungusCheck + word;
-        let guessedLetters = word.split('').map(letter => `<span>${letter === ' ' ? ' ' : ' _ '}</span>`);
-        const wordDisplay = document.getElementById('word-display');
-        const keyboard = document.getElementById('keyboard');
-        const congratsMessage = document.getElementById('congrats-message');
+      };
+      const getFungusCheck = (urlParam) =>
+        urlParam.includes("d") ? "GAY " : "FUN ";
 
-        wordDisplay.innerHTML = guessedLetters.join('');
+      const urlParam = getLowerCaseUrlParam();
+      const fungusCheck = getFungusCheck(urlParam);
+      let word = fungusCheck + getWord(urlParam);
 
-        for(let i = 65; i <= 90; i++) {
-            const key = document.createElement('div');
-            key.textContent = String.fromCharCode(i);
-            key.classList.add('key');
-            key.addEventListener('click', guessLetter);
-            keyboard.appendChild(key);
+      let guessedLetters = word
+        .split("")
+        .map((letter) => `<span>${letter === " " ? " " : " _ "}</span>`);
+      const wordDisplay = document.getElementById("word-display");
+      const congratsMessage = document.getElementById("congrats-message");
+
+      const applyStyling = () => {
+        if (word !== "FUN AUNT & UNCLE") {
+          document.querySelector(
+            "#word-display span:nth-child(4)"
+          ).style.paddingLeft = "15px";
+        } else {
+          document.querySelector(
+            "#word-display span:nth-child(4)"
+          ).style.paddingLeft = "15px";
+          document.querySelector(
+            "#word-display span:nth-child(9)"
+          ).style.paddingLeft = "15px";
+          document.querySelector(
+            "#word-display span:nth-child(11)"
+          ).style.paddingLeft = "15px";
+          document.querySelector("#word-display").style.fontSize = "6vw";
         }
+      };
 
-        function guessLetter() {
-            if(this.classList.contains('disabled')) return;
-            this.classList.add('disabled');
-            const guessedLetter = this.textContent;
-            let correctGuess = false;
-            for(let i = 0; i < word.length; i++) {
-                if(word[i] === guessedLetter) {
-                    guessedLetters[i] = `<span>${guessedLetter}</span>`;
-                    correctGuess = true;
-                }
-            }
-            wordDisplay.innerHTML = guessedLetters.join('');
-            if(correctGuess && !guessedLetters.includes('<span> _ </span>')) {
-                congratsMessage.style.display = 'block';
-                document.querySelector("#word-display span:nth-child(4)").style.paddingLeft = "5px";
-            }
+      wordDisplay.innerHTML = guessedLetters.join("");
+      applyStyling();
+
+      for (let i = 65; i <= 90; i++) {
+        addKeyToKeyboard(createKey(String.fromCharCode(i)));
+      }
+
+      addKeyToKeyboard(createKey("&"));
+      addKeyToKeyboard(createKey("🍆", false));
+
+      function guessLetter() {
+        if (this.classList.contains("disabled")) return;
+        this.classList.add("disabled");
+        const guessedLetter = this.textContent;
+        let correctGuess = false;
+        for (let i = 0; i < word.length; i++) {
+          if (word[i] === guessedLetter) {
+            guessedLetters[i] = `<span>${guessedLetter}</span>`;
+            correctGuess = true;
+          }
         }
+        wordDisplay.innerHTML = guessedLetters.join("");
+        applyStyling();
+
+        if (correctGuess && !guessedLetters.includes("<span> _ </span>")) {
+          congratsMessage.style.display = "block";
+        }
+      }
     </script>
-</body>
+  </body>
 </html>
