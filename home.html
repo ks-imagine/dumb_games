@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hangman Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #FFFCF9;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #word-display {
+            margin-bottom: 5vh;
+            font-size: 8vw;
+            color: #FFB7C5;
+        }
+        #keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            width: 80vw;
+            justify-content: space-between;
+        }
+        .key {
+            width: 15vw;
+            height: 15vw;
+            border: 1px solid #FFDAC1;
+            background-color: #FFDAC1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1vw;
+            cursor: pointer;
+            border-radius: 1vw;
+        }
+        .key.disabled {
+            background-color: #B5EAD7;
+            cursor: not-allowed;
+        }
+        #congrats-message {
+            display: none;
+            color: #FFB7C5;
+            font-size: 4vw;
+            margin-top: 2vh;
+        }
+        #word-display span:nth-child(4) {
+            padding-left: 15px;
+        }
+        @media (min-width: 600px) {
+            #word-display, #congrats-message {
+                font-size: 24px;
+            }
+            .key {
+                width: 30px;
+                height: 30px;
+                margin: 5px;
+                border-radius: 5px;
+            }
+            #keyboard {
+                width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="word-display"></div>
+    <div id="keyboard"></div>
+    <div id="congrats-message">Congratulations! You guessed the word!</div>
+
+    <script>
+        const word = 'GAY UNCLES';
+        let guessedLetters = word.split('').map(letter => `<span>${letter === ' ' ? ' ' : ' _ '}</span>`);
+        const wordDisplay = document.getElementById('word-display');
+        const keyboard = document.getElementById('keyboard');
+        const congratsMessage = document.getElementById('congrats-message');
+
+        wordDisplay.innerHTML = guessedLetters.join('');
+
+        for(let i = 65; i <= 90; i++) {
+            const key = document.createElement('div');
+            key.textContent = String.fromCharCode(i);
+            key.classList.add('key');
+            key.addEventListener('click', guessLetter);
+            keyboard.appendChild(key);
+        }
+
+        function guessLetter() {
+            if(this.classList.contains('disabled')) return;
+            this.classList.add('disabled');
+            const guessedLetter = this.textContent;
+            let correctGuess = false;
+            for(let i = 0; i < word.length; i++) {
+                if(word[i] === guessedLetter) {
+                    guessedLetters[i] = `<span>${guessedLetter}</span>`;
+                    correctGuess = true;
+                }
+            }
+            wordDisplay.innerHTML = guessedLetters.join('');
+            if(correctGuess && !guessedLetters.includes('<span> _ </span>')) {
+                congratsMessage.style.display = 'block';
+                document.querySelector("#word-display span:nth-child(4)").style.paddingLeft = "5px";
+            }
+        }
+    </script>
+</body>
+</html>
